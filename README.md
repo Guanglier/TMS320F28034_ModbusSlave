@@ -1,22 +1,22 @@
 # TMS320F28034_ModbusSlave
 Modbus slave implementation on TMS320F28034
 
-#current state
+# current state
 
 Coding unitary validation
 
 
-#Features
+# Features
 
 
 
 
-#ressources
+# ressources
 
 
 
 
-#how it works
+# how it works
 
 
 
