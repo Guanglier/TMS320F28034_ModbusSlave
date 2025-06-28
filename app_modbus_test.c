@@ -537,6 +537,50 @@ void app_modbustest_fct04_t1 ( ) {
     }
 }
 
+//-------------------------------------------------
+//	Function code 4 : READ Multiple input registers -> input register
+// read of 3 register
+//-------------------------------------------------
+void app_modbustest_fct04_t2 ( ) {
+	uint16_t	u16_regaddr = MB_INPUTREG_BASEADR;
+	uint16_t    u16_IndexSend = 0;
+	uint16_t	u16_ErrSet = 0;
+
+	Valid_RxStr.u16_CntBytesToReceive = 0;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x12;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x04;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_regaddr >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_regaddr & 0x00FF);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x00;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x03;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x22;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x8C;
+
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_INPUTREG, u16_regaddr++, 0x1234);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_INPUTREG, u16_regaddr++, 0x5678);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_INPUTREG, u16_regaddr++, 0x9ABC);
+	if ( 0 != u16_ErrSet ){
+		return;
+	}
+
+	//retour attendu
+	Valid_TxStr.u16_CntBytesToSend = 0;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x04;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x06;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x34;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x56;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x78;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x9A;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xBC;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xF1;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x95;
+
+    for (u16_IndexSend=0 ; u16_IndexSend<Valid_RxStr.u16_CntBytesToReceive ; u16_IndexSend++){
+        drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
+    }
+}
 
 
 
@@ -591,7 +635,11 @@ void app_modbus_test (){
 	if (  0!= Valid_TxStr.u16_ErrCode ){
 		while(1);
 	}
-	
+	Valid_TxStr.u16_ErrCode = 32000;
+	app_modbustest_fct04_t2 ();
+	if (  0!= Valid_TxStr.u16_ErrCode ){
+		while(1);
+	}
 
 
 	app_wrapper_modbuslavetimeoutcallback ();
