@@ -1,67 +1,67 @@
 [
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_CodeStartBranch.asm"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_DefaultIsr.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/source/DSP2803x_GlobalVariableDefs.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_Gpio.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_PieCtrl.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_PieVect.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_SysCtrl.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL",
       "file"      : "C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/source/DSP2803x_usDelay.asm"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
-      "file"      : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Example_2803xGpioToggle.c"
+      "file"      : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Example_2803xGpioToggle.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
-      "file"      : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/drv_modbus_crc.c"
+      "file"      : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/app_modbus_test.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
-      "file"      : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/app_modbus_test.c"
+      "file"      : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/drv_modbus_crc.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
-      "file"      : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/drv_modbus_slave.c"
+      "file"      : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/drv_modbus_slave.c"
    },
    {
-      "directory" : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/Debug",
+      "directory" : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/Debug",
       "command"   : "clang++ -I\"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/headers/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/include\" -I\"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/include\" -D_DEBUG -DLARGE_MODEL -xc",
-      "file"      : "C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle/hal_uart.c"
+      "file"      : "E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave/hal_uart.c"
    }
 ]

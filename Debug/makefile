@@ -135,20 +135,20 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXE_OUTPUTS += \
-Example_2803xGpioToggle.out 
+TMS320F28034_ModbusSlave.out 
 
 EXE_OUTPUTS__QUOTED += \
-"Example_2803xGpioToggle.out" 
+"TMS320F28034_ModbusSlave.out" 
 
 
 # All Target
-all: Example_2803xGpioToggle.out
+all: TMS320F28034_ModbusSlave.out
 
 # Tool invocations
-Example_2803xGpioToggle.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
+TMS320F28034_ModbusSlave.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: C2000 Linker'
-	"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/bin/cl2000" -v28 -ml -mt --define=_DEBUG --define=LARGE_MODEL -g --diag_suppress=10063 --diag_warning=225 --issue_remarks --verbose_diagnostics --quiet --abi=coffabi -z -m"Example_2803xGpioToggle.map" --stack_size=0x200 --warn_sections -i"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/lib" -i"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include" -i"C:/Users/user/workspace_ccstheia/Example_2803xGpioToggle" -i"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/lib" -i"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/lib" --reread_libs --issue_remarks --verbose_diagnostics --xml_link_info="Example_2803xGpioToggle_linkInfo.xml" --entry_point=code_start --rom_model -o "Example_2803xGpioToggle.out" $(ORDERED_OBJS)
+	"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/bin/cl2000" -v28 -ml -mt --define=_DEBUG --define=LARGE_MODEL -g --diag_suppress=10063 --diag_warning=225 --issue_remarks --verbose_diagnostics --quiet --abi=coffabi -z -m"TMS320F28034_ModbusSlave.map" --stack_size=0x200 --warn_sections -i"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/lib" -i"C:/ti/ccs2020/ccs/tools/compiler/ti-cgt-c2000_22.6.2.LTS/include" -i"E:/__SVN/SVN_Perso_New/Technique/TMS320F28034/Soft/TMS320F28034_ModbusSlave" -i"C:/ti/c2000/C2000Ware_5_05_00_00/device_support/f2803x/common/lib" -i"C:/ti/c2000/C2000Ware_5_05_00_00/libraries/math/IQmath/c28/lib" --reread_libs --issue_remarks --verbose_diagnostics --xml_link_info="TMS320F28034_ModbusSlave_linkInfo.xml" --entry_point=code_start --rom_model -o "TMS320F28034_ModbusSlave.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 
