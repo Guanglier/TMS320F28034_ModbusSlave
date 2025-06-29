@@ -80,8 +80,7 @@
 void delay_loop(void);
 void Gpio_select(void);
 void Gpio_example1(void);
-void Gpio_example2(void);
-void Gpio_example3(void);
+
 
 
 
@@ -161,21 +160,7 @@ void main(void)
 
 #endif  // - EXAMPLE1
 
-#if EXAMPLE2
-    //
-    // This example uses SET/CLEAR registers to toggle I/O's
-    //
-    Gpio_example2();
 
-#endif
-
-#if EXAMPLE3
-    //
-    // This example uses TOGGLE registers to toggle I/O's
-    //
-    Gpio_example3();
-
-#endif
 }
 
 
@@ -220,16 +205,7 @@ Gpio_example1(void)
 
         app_modbus_test ();
 
-       // u16_cpt = 0;
-        //__byte( (int*) gbuff, u16_cpt++) = 'C';
-        //__byte( (int*) gbuff, u16_cpt++) = 'o';
-        //__byte( (int*) gbuff, u16_cpt++) = 'u';
-        //__byte( (int*) gbuff, u16_cpt++) = 'c';
-        //__byte( (int*) gbuff, u16_cpt++) = 'o';
-        //__byte( (int*) gbuff, u16_cpt++) = 'u';
-        //__byte( (int*) gbuff, u16_cpt++) = '!';
-        
-        //hal_uart1_transmit_IT((const uint16_t *) gbuff, u16_cpt);
+
     }
 }
 

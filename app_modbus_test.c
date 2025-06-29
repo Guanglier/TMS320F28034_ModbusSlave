@@ -58,7 +58,10 @@ DRV_MODBUS_SLAVE_REGDEF_t		Mb1_TableReg_OutputCoils[]=
 		{ MB_OUTPUTCOIL_BASEADR + 5, 1, 0},
 		{ MB_OUTPUTCOIL_BASEADR + 6, 1, 0},
 		{ MB_OUTPUTCOIL_BASEADR + 7, 0, 0},
-		{ MB_OUTPUTCOIL_BASEADR + 8, 0, 0}
+		{ MB_OUTPUTCOIL_BASEADR + 8, 0, 0},
+		{ MB_OUTPUTCOIL_BASEADR + 9, 0, 0},
+		{ MB_OUTPUTCOIL_BASEADR + 10, 0, 0},
+		
 };
 
 DRV_MODBUS_SLAVE_REGDEF_t		Mb1_TableReg_Inputcoils[]=
@@ -587,7 +590,9 @@ void app_modbustest_fct04_t2 ( ) {
 // 	we write MB_OUTPUTCOIL_BASEADR+1 and check MB_OUTPUTCOIL_BASEADR and MB_OUTPUTCOIL_BASEADR+2 are not affected
 //-------------------------------------------------
 void app_modbustest_fct05_t1 ( ) {
-	uint16_t	u16_regaddr = MB_OUTPUTCOIL_BASEADR;
+	uint16_t	u16_regaddrBase = MB_OUTPUTCOIL_BASEADR;
+	uint16_t	u16_regaddr = u16_regaddrBase;
+	MODBUS_SLAVE_REG_TYPE_t		l_RegType = MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL;
 	uint16_t    u16_IndexSend = 0;
 	uint16_t	u16_ErrSet = 0;
 	uint16_t	u16_DataRegToCheck = 12;
@@ -604,19 +609,20 @@ void app_modbustest_fct05_t1 ( ) {
     __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0xEF;
     __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x44;
 
-	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 0);
-	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 0);
-	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 0);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0);
 	if ( 0 != u16_ErrSet ){
 		return;
 	}
 
 	//retour attendu
 	Valid_TxStr.u16_CntBytesToSend = 0;
+	u16_regaddr = u16_regaddrBase;
 	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
 	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x05;
-	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x00;
-	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x6E;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) >> 8);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) & 0x00FF);
 	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xFF;
 	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x00;
 	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xEF;
@@ -627,17 +633,18 @@ void app_modbustest_fct05_t1 ( ) {
     }
 
 	// after interrupt of answer, check that registers still have the good value
-	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, MB_OUTPUTCOIL_BASEADR, &u16_DataRegToCheck);
+	u16_regaddr = u16_regaddrBase;
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
 	if ( 0 != u16_DataRegToCheck ){
 		Valid_TxStr.u16_ErrCode |= 1;
 		return;
 	}
-	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, MB_OUTPUTCOIL_BASEADR+1, &u16_DataRegToCheck);
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
 	if ( 1 != u16_DataRegToCheck ){
 		Valid_TxStr.u16_ErrCode |= 1;
 		return;
 	}
-	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, MB_OUTPUTCOIL_BASEADR+2, &u16_DataRegToCheck);
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
 	if ( 0 != u16_DataRegToCheck ){
 		Valid_TxStr.u16_ErrCode |= 1;
 		return;
@@ -652,11 +659,11 @@ void app_modbustest_fct05_t1 ( ) {
 		Valid_TxStr.u16_ErrCode |= 0xA00;
 		return;
 	}
-	if ( MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL != l_RegValueCheck.reg_type){
+	if ( l_RegType != l_RegValueCheck.reg_type){
 		Valid_TxStr.u16_ErrCode |= 0xB00;
 		return;
 	}
-	if ( (MB_OUTPUTCOIL_BASEADR+1) != l_RegValueCheck.u16_reg_adr){
+	if ( (u16_regaddrBase+1) != l_RegValueCheck.u16_reg_adr){
 		Valid_TxStr.u16_ErrCode |= 0xC00;
 		return;
 	}
@@ -675,11 +682,238 @@ void app_modbustest_fct05_t1 ( ) {
 }
 
 //-------------------------------------------------
-//	Function code 5 : WRITE single HOLDING REG 
-// 	
+//	Function code 6 : WRITE single HOLDING REG 
+// 	we write MB_OUTPUTREG_BASEADR+1 and check MB_OUTPUTREG_BASEADR and MB_OUTPUTREG_BASEADR+2 are not affected
 //-------------------------------------------------
 void app_modbustest_fct06_t1 ( ) {
+	uint16_t	u16_regaddrBase = MB_OUTPUTREG_BASEADR;
+	uint16_t	u16_regaddr = u16_regaddrBase;
+	MODBUS_SLAVE_REG_TYPE_t		l_RegType = MODBUS_SLAVE_REG_TYPE_OUTPUTREG;
+	uint16_t    u16_IndexSend = 0;
+	uint16_t	u16_ErrSet = 0;
+	uint16_t	u16_DataRegToCheck = 12;
+	MODBUS_SLAVE_UPDATED_REG_VALUE_t	l_RegValueCheck;
 
+
+	u16_regaddr = u16_regaddrBase;
+	Valid_RxStr.u16_CntBytesToReceive = 0;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x12;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x06;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) & 0x00FF);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x12;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x97;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0xA7;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x86;
+
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0x2354);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0x0000);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0x3258);
+	if ( 0 != u16_ErrSet ){
+		return;
+	}
+
+	//retour attendu
+	Valid_TxStr.u16_CntBytesToSend = 0;
+	u16_regaddr = u16_regaddrBase;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x06;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) >> 8);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) & 0x00FF);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x97;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xA7;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x86;
+
+    for (u16_IndexSend=0 ; u16_IndexSend<Valid_RxStr.u16_CntBytesToReceive ; u16_IndexSend++){
+        drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
+    }
+
+	// after interrupt of answer, check that registers still have the good value
+	u16_regaddr = u16_regaddrBase;
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+	if ( 0x2354 != u16_DataRegToCheck ){
+		Valid_TxStr.u16_ErrCode |= 1;
+		return;
+	}
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+	if ( 0x1297 != u16_DataRegToCheck ){
+		Valid_TxStr.u16_ErrCode |= 1;
+		return;
+	}
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+	if ( 0x3258 != u16_DataRegToCheck ){
+		Valid_TxStr.u16_ErrCode |= 1;
+		return;
+	}
+
+	//- check that the function returnts that a reg has been updated and it's the correct register
+	l_RegValueCheck.reg_type = 0;
+	l_RegValueCheck.u16_reg_adr = 0;
+	l_RegValueCheck.u16_reg_new_val = 0x1297;
+	u16_regaddr = u16_regaddrBase;
+	u16_ErrSet = drv_modbus_slave_GetUpdatedRegValue (&G_ModbusSlave_instance, &l_RegValueCheck);
+	if ( 1 != u16_ErrSet ){
+		Valid_TxStr.u16_ErrCode |= 0xA00;
+		return;
+	}
+	if ( l_RegType != l_RegValueCheck.reg_type){
+		Valid_TxStr.u16_ErrCode |= 0xB00;
+		return;
+	}
+	if ( (u16_regaddr+1) != l_RegValueCheck.u16_reg_adr){
+		Valid_TxStr.u16_ErrCode |= 0xC00;
+		return;
+	}
+	if ( 0x1297 != l_RegValueCheck.u16_reg_new_val){
+		Valid_TxStr.u16_ErrCode |= 0xD00;
+		return;
+	}
+
+	//--- check after the call that no more registers are signaled as updated
+	u16_ErrSet = drv_modbus_slave_GetUpdatedRegValue (&G_ModbusSlave_instance, &l_RegValueCheck);
+	if ( 0 != u16_ErrSet ){
+		Valid_TxStr.u16_ErrCode |= 0xB00;
+		return;
+	}
+
+}
+//-------------------------------------------------
+//	Function code 6 : WRITE multiple COIL (digital output)
+// 	write of 6 output coils
+//-------------------------------------------------
+void app_modbustest_fct15_t1 ( ) {
+	uint16_t	u16_regaddrBase = MB_OUTPUTCOIL_BASEADR;
+	uint16_t	u16_regaddr = u16_regaddrBase;
+	MODBUS_SLAVE_REG_TYPE_t		l_RegType = MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL;
+	uint16_t    u16_IndexSend = 0;
+	uint16_t	u16_ErrSet = 0;
+	uint16_t	u16_DataRegToCheck = 12;
+	MODBUS_SLAVE_UPDATED_REG_VALUE_t	l_RegValueCheck;
+	uint16_t	u16_ValRegsMask;
+	uint16_t	u16_Val;
+	uint16_t	u16_CptValReg;
+	uint16_t	u16_ValuesWrittenByModbus = 0b0000000000101101;
+	//uint16_t	u16_ValuesExpectedAfterWrite = 0;
+	uint16_t	u16_ValuesToWriteCnt = 6;
+
+	//---- perpare the simulation of received frame by the slave ---
+	Valid_RxStr.u16_CntBytesToReceive = 0;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x12;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x0F;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) & 0x00FF);
+	__byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_ValuesToWriteCnt >> 8);		// 6 coils
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_ValuesToWriteCnt & 0x00FF);		// 6 coils
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x01;		// 1 byte
+	__byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_ValuesWrittenByModbus & 0x00FF);		// databyte
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0xF7;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x9B;
+
+	//--- set registers to the value before write -----
+	u16_regaddr = u16_regaddrBase;
+	for ( u16_CptValReg=0 ; u16_CptValReg<11 ; u16_CptValReg++){
+		u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, 0);
+	}
+	if ( 0 != u16_ErrSet ){
+		return;
+	}
+
+	//---- perpare the expected answer from the slave ---
+	Valid_TxStr.u16_CntBytesToSend = 0;
+	u16_regaddr = u16_regaddrBase;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x0F;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) >> 8);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = ((1+u16_regaddr) & 0x00FF);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = (u16_ValuesToWriteCnt >> 8);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = (u16_ValuesToWriteCnt & 0x00FF);
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xB6;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xB7;
+
+	//--- send to the slave the simulated request ----------
+    for (u16_IndexSend=0 ; u16_IndexSend<Valid_RxStr.u16_CntBytesToReceive ; u16_IndexSend++){
+        drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
+    }
+
+	//---- at this point the variable Valid_TxStr.u16_ErrCode has been updated when interception of TX from the slave 
+	// via the function app_modbus_valid_TxCharFunction.  we need to make OR to this value not to lost the result
+
+
+	// after interrupt of answer, check that registers have the good value (the ones written and the other not written)
+	u16_regaddr = u16_regaddrBase;
+	
+	//- read the first reg, that is not written because we write from reg+1
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+	if ( 0 != u16_DataRegToCheck ){
+		Valid_TxStr.u16_ErrCode |= 1;
+		return;
+	}
+
+	//---- read the registers that have been written and check the value
+	u16_ValRegsMask = 0x1;
+	for ( u16_CptValReg=0 ; u16_CptValReg<u16_ValuesToWriteCnt ; u16_CptValReg++)
+	{
+		if( (u16_ValuesWrittenByModbus & u16_ValRegsMask) != 0){u16_Val = 1;}else{	u16_Val = 0;}
+		u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+
+		if ( u16_Val != u16_DataRegToCheck ){
+			Valid_TxStr.u16_ErrCode |= 2;
+			return;
+		}
+		u16_ValRegsMask = u16_ValRegsMask << 1;
+	}
+	if ( 0 != u16_ErrSet ){
+		return;
+	}
+
+	//--- check next register has not been upgraded
+	u16_ErrSet |= drv_modbus_get_reg_value (&G_ModbusSlave_instance, l_RegType, u16_regaddr++, &u16_DataRegToCheck);
+	if ( 0 != u16_DataRegToCheck ){
+		Valid_TxStr.u16_ErrCode |= 1;
+		return;
+	}
+
+	//- check that the function returnts that a reg has been updated and it's the correct register
+	// because registers has been registered on the structure with addres increasing, and the drv_modbus_slave_GetUpdatedRegValue
+	// looks from the first element to the last, then we should get updates in order, we can make a loop to check
+	l_RegValueCheck.reg_type = 0;
+	l_RegValueCheck.u16_reg_adr = 0;
+	l_RegValueCheck.u16_reg_new_val = 0;
+	u16_regaddr = u16_regaddrBase+1;
+
+	u16_ValRegsMask = 0x1;
+	for ( u16_CptValReg=0 ; u16_CptValReg<u16_ValuesToWriteCnt ; u16_CptValReg++)
+	{
+		//-- there should be an update
+		u16_ErrSet = drv_modbus_slave_GetUpdatedRegValue (&G_ModbusSlave_instance, &l_RegValueCheck);
+		if ( 1 != u16_ErrSet ){
+			Valid_TxStr.u16_ErrCode |= 0xA00;
+			return;
+		}
+		if ( l_RegType != l_RegValueCheck.reg_type){
+			Valid_TxStr.u16_ErrCode |= 0xB00;
+			return;
+		}
+		if ( u16_regaddr++ != l_RegValueCheck.u16_reg_adr){
+			Valid_TxStr.u16_ErrCode |= 0xC00;
+			return;
+		}
+		if( (u16_ValuesWrittenByModbus & u16_ValRegsMask) != 0){u16_Val = 1;}else{	u16_Val = 0;}
+		u16_ValRegsMask = u16_ValRegsMask << 1;
+		if ( u16_Val != l_RegValueCheck.u16_reg_new_val){
+			Valid_TxStr.u16_ErrCode |= 0xD00;
+			return;
+		}
+	}
+
+	
+	//--- check after the call that no more registers are signaled as updated
+	u16_ErrSet = drv_modbus_slave_GetUpdatedRegValue (&G_ModbusSlave_instance, &l_RegValueCheck);
+	if ( 0 != u16_ErrSet ){
+		Valid_TxStr.u16_ErrCode |= 0xB00;
+		return;
+	}
 
 }
 
@@ -740,15 +974,25 @@ void app_modbus_test (){
 	if (  0!= Valid_TxStr.u16_ErrCode ){
 		while(1);
 	}
-	*/
+	
 	Valid_TxStr.u16_ErrCode = 32000;
 	app_modbustest_fct05_t1 ();
 	if (  0!= Valid_TxStr.u16_ErrCode ){
 		while(1);
 	}
+	Valid_TxStr.u16_ErrCode = 32000;
+	app_modbustest_fct06_t1 ();
+	if (  0!= Valid_TxStr.u16_ErrCode ){
+		while(1);
+	}
+	*/
+	Valid_TxStr.u16_ErrCode = 32000;
+	app_modbustest_fct15_t1 ();
+	if (  0!= Valid_TxStr.u16_ErrCode ){
+		while(1);
+	}
 	
 
-//app_modbustest_fct06_t1   // à finir
 
 	app_wrapper_modbuslavetimeoutcallback ();
 	app_wrapper_modbuslavetimeoutcallback ();
