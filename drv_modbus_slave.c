@@ -138,6 +138,7 @@ void drv_modbus_slave_TimeoutTimer_callback ( MOSBUS_SLVAE_INSTANCE_t * const li
 		}
 	}
 }
+
 void drv_modbus_slave_TimeoutTimer_Configure ( MOSBUS_SLVAE_INSTANCE_t * const liPtrModbusInstance ){
 	drv_modbus_slave_Timeout_EnableAndReset ( liPtrModbusInstance );
 
@@ -155,8 +156,6 @@ void drv_modbus_slave_TimeoutTimer_Configure ( MOSBUS_SLVAE_INSTANCE_t * const l
 	TIM17->CR1 = 0x0001;		// enable counting
     */
 }
-
-
 
 //---------------------------------------------------------------------------------
 //		init of the modbus slave layer
@@ -200,10 +199,6 @@ void drv_modbus_slave_init ( MOSBUS_SLVAE_INSTANCE_t * const liPtrModbusInstance
 
 
 }
-
-
-
-
 
 //---------------------------------------------------------------------------------
 //	takes a tab of all frame to send ,check some parameters,
@@ -258,7 +253,6 @@ static uint16_t drv_modbus_make_and_send_frame ( MOSBUS_SLVAE_INSTANCE_t *const 
 	return MODBUS_SLAVE_ERR_NO_ERROR;
 }
 
-
 //------------------------------------------------------------------------------------------------------------------
 //		When TX ends we need to stop emitting on the bus
 //------------------------------------------------------------------------------------------------------------------
@@ -292,8 +286,6 @@ static void drv_modbus_send_err_frame ( MOSBUS_SLVAE_INSTANCE_t * const liPtrMod
 		2*MOSBUS_SLVAE_TRAMETXBUFF_SIZE_U16_CNT );
 }
 
-
-
 //------------------------------------------------------------------------------------------------------------------
 //		Get pointer to structure that contains the corresponding data + length of that tab
 //		input is regsiter type (not modbus function code)
@@ -323,9 +315,6 @@ void GetRegPtrAndCount (const MOSBUS_SLVAE_INSTANCE_t * const liPtrModbusInstanc
 	}
 }
 
-
-
-
 //------------------------------------------------------------------------------------------------------------------
 //		Convert function code of modbus request to corresponding data register
 //------------------------------------------------------------------------------------------------------------------
@@ -354,9 +343,6 @@ MODBUS_SLAVE_REG_TYPE_t FunctionCodeToRegType ( const uint16_t liu16_FctCode ){
 
 }
 
-
-
-
 //-------------------------------------------------------------------------------------------
 //		return one register value on u16_ptr_data
 //		Return 0 if success, 1 otherwise
@@ -377,9 +363,6 @@ MODBUS_SLAVE_ERR_t drv_modbus_get_reg_value (MOSBUS_SLVAE_INSTANCE_t * const liP
 
 	return MODBUS_SLAVE_ERR_DATA_NOT_AVAILABLE;
 }
-
-
-
 
 //-------------------------------------------------------------------------------------------------------------------------
 //  @brief Writes a single register to a Modbus slave instance.
@@ -468,11 +451,6 @@ static uint16_t drv_modbus_write_single_register (MOSBUS_SLVAE_INSTANCE_t * cons
 	// in the appropriate register table for the given register type.
 	return MODBUS_SLAVE_ERR_DATA_NOT_AVAILABLE;
 }
-
-
-
-
-
 
 //-------------------------------------------------------------------------------------------
 //		HANDLE all READ commands, that is
@@ -568,10 +546,6 @@ static uint16_t drv_modbus_answer_read_regs ( MOSBUS_SLVAE_INSTANCE_t * const li
 			3+2+ __byte( (int*) (liPtrModbusInstance->internal.TrameTXTab), MODBUSSLAVE_BYTE_CNT ),
 			2*MOSBUS_SLVAE_TRAMETXBUFF_SIZE_U16_CNT );
 }
-
-
-
-
 //---------------------------------------------------------------------------------
 //	PROCESS the received frame and call the proper response function
 //	Handle directly write requests
@@ -750,15 +724,6 @@ static uint16_t drv_modbus_process_request ( MOSBUS_SLVAE_INSTANCE_t *const liPt
 	}
 	//return MODBUS_SLAVE_ERR_INVALID_VALUE;
 }
-
-
-
-
-
-
-
-
-
 
 //---------------------------------------------------------------------------------
 //			RECEIVER state machine
@@ -940,10 +905,6 @@ void drv_modbus_slave_rxtUartHandler ( MOSBUS_SLVAE_INSTANCE_t * const liPtrModb
 
 	}
 }
-
-
-
-
 
 //------------------------------------------------------------------------------------------------------------------
 //	see if one reg has been updated (written), return 0 if no registers updated, 1 if at least one reg updated

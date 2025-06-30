@@ -1,12 +1,8 @@
-
-
 #include "drv_modbus_slave.h"
 
 
 
-
-MOSBUS_SLVAE_INSTANCE_t		G_ModbusSlave_instance;
-
+MOSBUS_SLVAE_INSTANCE_t				G_ModbusSlave_instance;
 MODBUS_SLAVE_UPDATED_REG_VALUE_t	reg_cfg;
 
 
@@ -87,9 +83,6 @@ DRV_MODBUS_SLAVE_REGBASE_t	Mb1__ModbusCfg = {
 		{ Mb1_TableReg_Inputcoils, 	sizeof(Mb1_TableReg_Inputcoils) / sizeof(DRV_MODBUS_SLAVE_REGDEF_t)	} ,
 };
 
-
-
-
 void app_modbus_init (){
 
 	G_ModbusSlave_instance.config.RegistersStrPtr = &Mb1__ModbusCfg;
@@ -102,7 +95,6 @@ void app_modbus_init (){
 	drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_INPUTREG, 0x0081, 0x5678 );
 
 }
-
 
 void app_modbus_autom (){
 
@@ -502,7 +494,6 @@ void app_modbustest_fct03_t2 ( ) {
         drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
     }
 }
-
 //-------------------------------------------------
 //	Function code 4 : READ Multiple input registers -> input register
 // read of 1 register
@@ -541,7 +532,6 @@ void app_modbustest_fct04_t1 ( ) {
         drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
     }
 }
-
 //-------------------------------------------------
 //	Function code 4 : READ Multiple input registers -> input register
 // read of 3 register
@@ -586,7 +576,6 @@ void app_modbustest_fct04_t2 ( ) {
         drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
     }
 }
-
 //-------------------------------------------------
 //	Function code 5 : WRITE single COIL 
 // 	we write MB_OUTPUTCOIL_BASEADR+1 and check MB_OUTPUTCOIL_BASEADR and MB_OUTPUTCOIL_BASEADR+2 are not affected
@@ -682,7 +671,6 @@ void app_modbustest_fct05_t1 ( ) {
 	}
 
 }
-
 //-------------------------------------------------
 //	Function code 6 : WRITE single HOLDING REG 
 // 	we write MB_OUTPUTREG_BASEADR+1 and check MB_OUTPUTREG_BASEADR and MB_OUTPUTREG_BASEADR+2 are not affected
@@ -919,7 +907,6 @@ void app_modbustest_fct15_t1 ( ) {
 
 }
 
-
 //-------------------------------------------------
 //	Function code 16 : WRITE multiple HOLDINGREG (output regs)
 // 	write of 3 output regs
@@ -1053,6 +1040,53 @@ void app_modbustest_fct16_t1 ( ) {
 		Valid_TxStr.u16_ErrCode |= 0xB00;
 		return;
 	}
+
+}
+//-------------------------------------------------
+//	simulate timeout on reception, send some bytes and then stop
+// 	and call timeout function to simulate timeout, then 
+// 	execute real test
+//-------------------------------------------------
+void test_timeout (){
+	MODBUS_SLAVE_UPDATED_REG_VALUE_t	l_RegValueCheck;
+	MODBUS_SLAVE_REG_TYPE_t		l_RegType = MODBUS_SLAVE_REG_TYPE_OUTPUTREG;
+	uint16_t	u16_regaddrBase = MB_OUTPUTREG_BASEADR;
+	uint16_t	u16_regaddr = u16_regaddrBase;
+	uint16_t	u16_CptValReg;
+	const uint16_t	u16_ValuesToWriteCnt = 3;
+	uint16_t	u16_RegValuesToWrite[u16_ValuesToWriteCnt] = {0x1234, 0x4567, 0x7894};
+	uint16_t	u16_IndexSend;
+
+
+	//---- perpare the simulation of received frame by the slave ---
+	Valid_RxStr.u16_CntBytesToReceive = 0;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x12;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x10;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = ((1+u16_regaddr) & 0x00FF);
+	__byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_ValuesToWriteCnt >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_ValuesToWriteCnt & 0x00FF);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (2*u16_ValuesToWriteCnt)&0x00FF;		// number of bytes
+	for ( u16_CptValReg=0 ; u16_CptValReg<u16_ValuesToWriteCnt ; u16_CptValReg++){
+		__byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_RegValuesToWrite[u16_CptValReg]>> 8);
+		__byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_RegValuesToWrite[u16_CptValReg] & 0x00FF);
+	}
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x8F;
+
+	// here stop transmission, simulate incomplete frame
+
+	//--- send to the slave the simulated request ----------
+    for (u16_IndexSend=0 ; u16_IndexSend<Valid_RxStr.u16_CntBytesToReceive ; u16_IndexSend++){
+        drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
+    }
+	// call more than TIMEOUT_CPT_VALUE to provoque un timeout
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+
+	// then a "normal" test should succeed
+	app_modbustest_fct15_t1 ();
 
 }
 
