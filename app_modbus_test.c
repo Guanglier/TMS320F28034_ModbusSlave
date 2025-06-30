@@ -1089,7 +1089,57 @@ void test_timeout (){
 	app_modbustest_fct15_t1 ();
 
 }
+//-------------------------------------------------
+//	Send a frame to other slave (address) and then 
+//	after timeout send a frame to right address
+//-------------------------------------------------
+void test_other_slave_addr (){
+	uint16_t	u16_regaddr = MB_OUTPUTCOIL_BASEADR;
+	uint16_t    u16_IndexSend = 0;
+	uint16_t	u16_ErrSet = 0;
 
+	Valid_RxStr.u16_CntBytesToReceive = 0;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x13;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x01;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_regaddr >> 8);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = (u16_regaddr & 0x00FF);
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x00;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x04;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0xAF;
+    __byte((int*)Valid_RxStr.Valid_BuffRx,Valid_RxStr.u16_CntBytesToReceive++) = 0x66;
+
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 0);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 1);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 1);
+	u16_ErrSet |= drv_modbus_slave_SetNewRegValue (&G_ModbusSlave_instance, MODBUS_SLAVE_REG_TYPE_OUTPUTCOIL, u16_regaddr++, 0);
+	if ( 0 != u16_ErrSet ){
+		return;
+	}
+
+	//retour attendu
+	//	12 01 01 (byte count) 06 (data value coil data is sent from msb to lsb in sent byte)  D5 0E
+	Valid_TxStr.u16_CntBytesToSend = 0;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x12;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x01;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x01;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x06;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0xD5;
+	__byte ( (int*) Valid_TxStr.Valid_BuffTx, Valid_TxStr.u16_CntBytesToSend++) = 0x0E;
+
+    for (u16_IndexSend=0 ; u16_IndexSend<Valid_RxStr.u16_CntBytesToReceive ; u16_IndexSend++){
+        drv_modbus_slave_rxtUartHandler ( &G_ModbusSlave_instance, __byte((int*)Valid_RxStr.Valid_BuffRx,u16_IndexSend) );
+    }
+
+	// call more than TIMEOUT_CPT_VALUE to provoque un timeout
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+	drv_modbus_slave_TimeoutTimer_callback (&G_ModbusSlave_instance);
+
+	// then a "normal" test should succeed
+	app_modbustest_fct15_t1 ();
+
+}
 
 void app_modbus_test (){
     
@@ -1165,14 +1215,28 @@ void app_modbus_test (){
 	if (  0!= Valid_TxStr.u16_ErrCode ){
 		while(1);
 	}
-	*/
+	
 	Valid_TxStr.u16_ErrCode = 32000;
 	app_modbustest_fct16_t1 ();
 	if (  0!= Valid_TxStr.u16_ErrCode ){
 		while(1);
 	}
-
+	
 	//-- erreur timeout
+	Valid_TxStr.u16_ErrCode = 32000;
+	test_timeout ();
+	if (  0!= Valid_TxStr.u16_ErrCode ){
+		while(1);
+	}
+	*/
+
+	//-- test the reception of other slave frame (no error no reception) and then a frame with good address
+	Valid_TxStr.u16_ErrCode = 32000;
+	test_other_slave_addr ();
+	if (  0!= Valid_TxStr.u16_ErrCode ){
+		while(1);
+	}
+	
 
 
 	//-- erreur crc
