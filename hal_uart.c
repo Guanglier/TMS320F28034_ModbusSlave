@@ -31,13 +31,9 @@ volatile uint16_t g_tx_in_progress = 0;
 // Fonctions de rappel pour les interruptions (déclarations forward)
 //interrupt void sciaTxFifoIsr(void);
 //interrupt void sciaRxFifoIsr(void);
-interrupt void hal_uart1_Interrupt(void) ;
+interrupt void hal_uart1_Interrupt      (void) ;
+interrupt void hal_uart1_Rx_Interrupt   ( void );
 
-/*
-interrupt void hal_uart1_Interrupt (void) {
-    sciaTxFifoIsr ();
-}
-*/
 
 // ----------------------------------------------------------------------------------------
 //          Fonction d'Initialisation de l'UART et des Broches
@@ -77,7 +73,8 @@ void hal_uart1_init(void) {
     SciaRegs.SCICCR.all = 0x0007;   // 1 stop bit, No parity, 8-bit character (0x0007)
     
 
-    SciaRegs.SCICTL1.all = 0x0002;  // Enable SCI, Enable RX, Disable TX (pour l'instant)
+    SciaRegs.SCICTL1.all = 0x0002;  // Enable SCI, Enable TX, Disable RX (pour l'instant)
+    SciaRegs.SCICTL1.bit.RXENA = 1;
 
     //SciaRegs.SCICTL2.bit.TXINTENA = 1; // Activer l'interruption TX vide du FIFO
     //SciaRegs.SCICTL2.bit.RXBKINTENA = 1; // Activer l'interruption RX prête
@@ -92,14 +89,24 @@ void hal_uart1_init(void) {
     SciaRegs.SCIFFTX.all = 0xE000;
     SciaRegs.SCIFFCT.all = 0x0;
 
+    SciaRegs.SCIFFRX.bit.RXFIFORESET = 0;
+    SciaRegs.SCIFFRX.bit.RXFIFORESET = 1;
+    SciaRegs.SCIFFRX.bit.RXFFOVRCLR = 1;
+    SciaRegs.SCIFFRX.bit.RXFFIENA = 1;
+    SciaRegs.SCIFFRX.bit.RXFFIL = 1;
+    //SciaRegs.SCIFFTX.all = 0x0021;
+
     // Configuration des interruptions au niveau du PIE
 
     EALLOW; // Permettre l'accès aux registres protégés
     PieVectTable.SCITXINTA = &hal_uart1_Interrupt; // Pointer vers la routine d'interruption TX
- //   PieVectTable.SCIRXINTA = &sciaRxFifoIsr; // Pointer vers la routine d'interruption RX
+    PieVectTable.SCIRXINTA = &hal_uart1_Rx_Interrupt; // Pointer vers la routine d'interruption RX
+
+    //SciaRegs.SCICTL2.bit.RXBKINTENA = 1; // Activer l'interruption RX prête
+
     EDIS; // Désactiver l'accès aux registres protégés
 
-    //PieCtrlRegs.PIEIER9.bit.INTx1 = 1; // Activer SCI-A RX dans le groupe 9 du PIE
+    PieCtrlRegs.PIEIER9.bit.INTx1 = 1; // Activer SCI-A RX dans le groupe 9 du PIE
     PieCtrlRegs.PIEIER9.bit.INTx2 = 1; // Activer SCI-A TX dans le groupe 9 du PIE
 
     PieCtrlRegs.PIECTRL.bit.ENPIE = 1;   // Activer le PIE
@@ -167,7 +174,16 @@ interrupt void hal_uart1_Interrupt(void) {
     PieCtrlRegs.PIEACK.all = PIEACK_GROUP9; // Acquitter l'interruption au niveau du PIE
 
 }
+extern uint16_t  gbuff[10];
 
+interrupt void hal_uart1_Rx_Interrupt ( void ) {
+    volatile uint16_t   lu16_Char;
+
+    lu16_Char = SciaRegs.SCIRXBUF.all;
+    SciaRegs.SCIFFRX.bit.RXFFINTCLR  =1;
+
+    __byte ( gbuff, 0) = ( lu16_Char & 0x00FF);
+}
 
 
 /*

@@ -194,6 +194,13 @@ Gpio_example1(void)
     uint16_t    u16_cpt=0;
     hal_uart1_init ();
     
+    u16_cpt = 0;
+    __byte ( gbuff, u16_cpt++) = 'C';
+    __byte ( gbuff, u16_cpt++) = 'o';
+    __byte ( gbuff, u16_cpt++) = 'u';
+    __byte ( gbuff, u16_cpt++) = '\n';
+    __byte ( gbuff, u16_cpt++) = '\r';
+
     for(;;)
     {
 
@@ -203,7 +210,10 @@ Gpio_example1(void)
         GpioDataRegs.GPACLEAR.bit.GPIO5 = 1;
         delay_loop();
 
-        app_modbus_test ();
+        //app_modbus_test ();
+
+
+        hal_uart1_transmit_IT ( gbuff, u16_cpt);
 
 
     }
